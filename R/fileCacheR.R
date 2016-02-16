@@ -7,9 +7,9 @@ file_function = function(fnc, verbose = TRUE)
   function(...)
   {
     allParams = as.list(...)
-    file = allParams[[1]]
 
     cacheDir = file.path(getwd(), ".cache", fncName)
+
     if(!dir.exists(cacheDir))
     {
       dir.create(cacheDir, recursive = TRUE)
@@ -20,9 +20,8 @@ file_function = function(fnc, verbose = TRUE)
 
     hash = digest::digest(allParams)
 
-
-
     cacheFile = file.path(cacheDir, hash)
+
     if(file.exists(cacheFile))
     {
         if(verbose)
@@ -45,4 +44,4 @@ file_function = function(fnc, verbose = TRUE)
 }
 
 # cache_read = file_function(readLines)
-# cache_read("NAMESPACE")
+# cache_read("R/fileCacheR.R")
