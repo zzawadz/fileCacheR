@@ -9,7 +9,8 @@ file_function = function(fnc, verbose = TRUE)
     allParams = as.list(...)
 
     cacheDir = file.path(getwd(), ".cache", fncName)
-
+    file = allParams[[1]]
+    
     if(!dir.exists(cacheDir))
     {
       dir.create(cacheDir, recursive = TRUE)
