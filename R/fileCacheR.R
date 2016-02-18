@@ -5,11 +5,9 @@ file_function = function(fnc, verbose = TRUE)
   verbose = force(verbose)
 
   cache = cache_function
-  namesParams = transform_params_list(fnc)
-
   body = as.list(cache)[[2]]
-  body = as.list(body)
-  body = as.call(c(body[1], namesParams, body[3]))
+
+  namesParams = transform_params_list(fnc)
 
   paramsList = c(head(as.list(fnc), -1))
   cache = as.function(c(paramsList, body))
@@ -35,7 +33,8 @@ transform_params_list = function(fun)
 
 cache_function = function(...)
 {
-  allParams = as.list(...)
+  allParams = as.list(match.call())[-1]
+  file = allParams[[1]]
 
   cacheDir = file.path(getwd(), ".cache", fncName)
 
@@ -45,9 +44,10 @@ cache_function = function(...)
   }
 
   modTime = file.mtime(file)
-  allParams[["MODTIME"]] = modTime
+  allParamsToHash = allParams
+  allParamsToHash[["MODTIME"]] = modTime
 
-  hash = digest::digest(allParams)
+  hash = digest::digest(allParamsToHash)
 
   cacheFile = file.path(cacheDir, hash)
 
@@ -60,7 +60,7 @@ cache_function = function(...)
     return(readRDS(cacheFile))
   }
 
-  value = fnc(...)
+  value = do.call(fnc, allParams)
   saveRDS(value, cacheFile)
 
   if(verbose)
@@ -71,6 +71,3 @@ cache_function = function(...)
   return(value)
 }
 
-
-# cache_read = file_function(readLines)
-# a = cache_read("R/fileCacheR.R")
