@@ -7,28 +7,10 @@ file_function = function(fnc, verbose = TRUE)
   cache = cache_function
   body = as.list(cache)[[2]]
 
-  namesParams = transform_params_list(fnc)
-
   paramsList = c(head(as.list(fnc), -1))
   cache = as.function(c(paramsList, body))
   cache
 
-}
-
-transform_params_list = function(fun)
-{
-  paramsList = c(head(as.list(fun), -1))
-
-  namesParams = names(paramsList)
-  namesParams = sapply(namesParams, as.name)
-
-  if(any(names(namesParams) == "..."))
-  {
-    k = which(names(namesParams) == "...")
-    names(namesParams)[k] = ""
-  }
-
-  namesParams
 }
 
 cache_function = function(...)
@@ -70,4 +52,7 @@ cache_function = function(...)
 
   return(value)
 }
+
+# cache_read = file_function(readLines)
+# a = cache_read("R/fileCacheR.R")
 
